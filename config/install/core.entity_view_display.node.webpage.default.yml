@@ -5,8 +5,32 @@ dependencies:
     - field.field.node.webpage.body
     - node.type.webpage
   module:
+    - layout_builder
+    - layout_discovery
     - text
     - user
+third_party_settings:
+  layout_builder:
+    sections:
+      -
+        layout_id: layout_onecol
+        layout_settings: {  }
+        components:
+          f34d9b1e-b9da-4bc2-a310-3b2d15f86903:
+            uuid: f34d9b1e-b9da-4bc2-a310-3b2d15f86903
+            region: content
+            configuration:
+              id: 'field_block:node:webpage:body'
+              label_display: ''
+              formatter:
+                label: hidden
+                type: text_default
+                settings: {  }
+                third_party_settings: {  }
+              context_mapping:
+                entity: layout_builder.entity
+            additional: {  }
+            weight: 0
 id: node.webpage.default
 targetEntityType: node
 bundle: webpage
