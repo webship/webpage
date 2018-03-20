@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.full
+    - field.field.node.webpage.body
+    - node.type.webpage
+  module:
+    - text
+    - user
+id: node.webpage.full
+targetEntityType: node
+bundle: webpage
+mode: full
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 101
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden: {  }

@@ -1,0 +1,12 @@
+name: Webpage
+description: 'Provides Webpage content type and related configuration. Use <em>Webpage</em> to add publicly accessible web pages.'
+type: module
+core: 8.x
+dependencies:
+  - field
+  - menu_ui
+  - node
+  - path
+  - text
+  - user
+version: 8.x-1.x
