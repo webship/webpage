@@ -3,6 +3,7 @@ status: true
 dependencies:
   config:
     - field.field.node.webpage.body
+    - field.field.node.webpage.layout_builder__layout
     - node.type.webpage
   module:
     - layout_builder
@@ -16,12 +17,14 @@ third_party_settings:
         layout_id: layout_onecol
         layout_settings: {  }
         components:
-          f34d9b1e-b9da-4bc2-a310-3b2d15f86903:
-            uuid: f34d9b1e-b9da-4bc2-a310-3b2d15f86903
+          84fb700f-b2fb-48e0-aab9-f7aa40c99dd6:
+            uuid: 84fb700f-b2fb-48e0-aab9-f7aa40c99dd6
             region: content
             configuration:
               id: 'field_block:node:webpage:body'
-              label_display: ''
+              label: Body
+              provider: layout_builder
+              label_display: '0'
               formatter:
                 label: hidden
                 type: text_default
@@ -31,6 +34,8 @@ third_party_settings:
                 entity: layout_builder.entity
             additional: {  }
             weight: 0
+    allow_custom: true
+    enabled: true
 id: node.webpage.default
 targetEntityType: node
 bundle: webpage
@@ -39,13 +44,10 @@ content:
   body:
     label: hidden
     type: text_default
-    weight: 101
+    weight: 0
     settings: {  }
     third_party_settings: {  }
     region: content
-  links:
-    weight: 100
-    region: content
-    settings: {  }
-    third_party_settings: {  }
-hidden: {  }
+hidden:
+  layout_builder__layout: true
+  links: true

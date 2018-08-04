@@ -4,6 +4,7 @@ dependencies:
   config:
     - core.entity_view_mode.node.full
     - field.field.node.webpage.body
+    - field.field.node.webpage.layout_builder__layout
     - node.type.webpage
   module:
     - layout_builder
@@ -17,12 +18,14 @@ third_party_settings:
         layout_id: layout_onecol
         layout_settings: {  }
         components:
-          4ba8ab12-d327-4f1f-b050-b37425c0927c:
-            uuid: 4ba8ab12-d327-4f1f-b050-b37425c0927c
+          8d3fcf1c-1328-49d2-8fe7-c4761ba0e39f:
+            uuid: 8d3fcf1c-1328-49d2-8fe7-c4761ba0e39f
             region: content
             configuration:
               id: 'field_block:node:webpage:body'
-              label_display: ''
+              label: Body
+              provider: layout_builder
+              label_display: '0'
               formatter:
                 label: hidden
                 type: text_default
@@ -32,6 +35,8 @@ third_party_settings:
                 entity: layout_builder.entity
             additional: {  }
             weight: 0
+    allow_custom: false
+    enabled: true
 id: node.webpage.full
 targetEntityType: node
 bundle: webpage
@@ -49,4 +54,5 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
-hidden: {  }
+hidden:
+  layout_builder__layout: true
