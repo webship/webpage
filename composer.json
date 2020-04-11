@@ -1,6 +1,6 @@
 {
   "name": "drupal/webpage",
-  "description": "Provides Webpage content type and related configuration. Use <em>Webpage</em> to add publicly accessible web pages.",
+  "description": "Provides Webpage content type and related configuration. Use Webpage to add publicly accessible web pages.",
   "type": "drupal-module",
   "homepage": "https://www.drupal.org/project/webpage",
   "license": "GPL-2.0-or-later",
@@ -23,8 +23,14 @@
     }
   },
   "require": {
-    "drupal/n1ed": "^2.10",
-    "drupal/pathauto": "^1.6",
-    "drupal/allowed_formats": "^1.2"
+    "drupal/ctools": "@stable",
+    "drupal/entity": "@stable",
+    "drupal/token": "@stable",
+    "drupal/ds": "@stable",
+    "drupal/field_group": "@stable",
+    "drupal/smart_trim": "@stable",
+    "drupal/pathauto": "@stable",
+    "drupal/n1ed": "@stable",
+    "drupal/allowed_formats": "@stable"
   }
 }

@@ -1,12 +1,16 @@
 name: Webpage
 description: 'Provides Webpage content type and related configuration. Use Webpage to add publicly accessible web pages.'
 type: module
-version: 8.2.x-dev
 core_version_requirement: '^8 || ^9'
 dependencies:
-  - allowed_formats
-  - ckeditor
+  - node
+  - path
+  - pathauto
+  - text
+  - user
   - editor
+  - ckeditor
+  - n1ed
   - field
   - file
   - filter
@@ -14,9 +18,7 @@ dependencies:
   - media
   - media_library
   - menu_ui
-  - n1ed
-  - node
-  - path
-  - pathauto
-  - text
-  - user
+  - ctools
+  - ctools_block
+  - ctools_views
+  - allowed_formats
