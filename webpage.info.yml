@@ -22,3 +22,4 @@ dependencies:
   - ctools_block
   - ctools_views
   - allowed_formats
+  - components

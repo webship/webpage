@@ -31,6 +31,8 @@
     "drupal/smart_trim": "@stable",
     "drupal/pathauto": "@stable",
     "drupal/n1ed": "@stable",
-    "drupal/allowed_formats": "@stable"
+    "drupal/allowed_formats": "@stable",
+    "drupal/components": "@stable",
+    "drupal/radix_layouts": "@stable"
   }
 }
