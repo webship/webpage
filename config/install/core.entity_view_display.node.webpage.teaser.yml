@@ -4,51 +4,20 @@ dependencies:
   config:
     - core.entity_view_mode.node.teaser
     - field.field.node.webpage.body
+    - field.field.node.webpage.field_media
     - node.type.webpage
   module:
-    - layout_builder
-    - layout_discovery
-    - text
     - user
-third_party_settings:
-  layout_builder:
-    sections:
-      -
-        layout_id: layout_onecol
-        layout_settings: {  }
-        components:
-          fac2c6af-ca07-46f9-b1c2-85e9301159c4:
-            uuid: fac2c6af-ca07-46f9-b1c2-85e9301159c4
-            region: content
-            configuration:
-              id: 'field_block:node:webpage:body'
-              label_display: ''
-              formatter:
-                label: hidden
-                type: text_summary_or_trimmed
-                settings:
-                  trim_length: 600
-                third_party_settings: {  }
-              context_mapping:
-                entity: layout_builder.entity
-            additional: {  }
-            weight: 0
 id: node.webpage.teaser
 targetEntityType: node
 bundle: webpage
 mode: teaser
 content:
-  body:
-    label: hidden
-    type: text_summary_or_trimmed
-    weight: 101
-    settings:
-      trim_length: 600
-    third_party_settings: {  }
-    region: content
   links:
     weight: 100
     region: content
     settings: {  }
     third_party_settings: {  }
-hidden: {  }
+hidden:
+  body: true
+  field_media: true

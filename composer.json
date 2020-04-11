@@ -10,11 +10,6 @@
       "name": "Webship",
       "homepage": "http://webship.org",
       "role": "Maintainer"
-    },
-    {
-      "name": "Vardot",
-      "homepage": "https://www.drupal.org/vardot",
-      "role": "Maintainer"
     }
   ],
   "support": {
@@ -25,27 +20,11 @@
     "drupal": {
       "type": "composer",
       "url": "https://packages.drupal.org/8"
-      },
-    "assets": {
-      "type": "composer",
-      "url": "https://asset-packagist.org"
     }
   },
   "require": {
-    "composer/installers": "^1.5.0",
-    "oomphinc/composer-installers-extender": "^1.1.2",
-    "cweagans/composer-patches": "^1.6.4",
-    "drupal/drupal-library-installer-plugin": "^0.3"
-  },
-  "extra": {
-    "branch-alias": {
-      "dev-8.x-1.x": "8.1.x-dev"
-    },
-    "installer-types": [
-      "bower-asset",
-      "npm-asset"
-    ],
-    "enable-patching": true,
-    "composer-exit-on-patch-failure": true
+    "drupal/n1ed": "^2.10",
+    "drupal/pathauto": "^1.6",
+    "drupal/allowed_formats": "^1.2"
   }
 }

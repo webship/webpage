@@ -1,0 +1,65 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - filter.format.modern_editor
+  module:
+    - ckeditor
+format: modern_editor
+editor: ckeditor
+settings:
+  toolbar:
+    rows:
+      -
+        -
+          name: Formatting
+          items:
+            - Bold
+            - Italic
+        -
+          name: Links
+          items:
+            - DrupalLink
+            - DrupalUnlink
+        -
+          name: Lists
+          items:
+            - BulletedList
+            - NumberedList
+        -
+          name: Media
+          items:
+            - Blockquote
+            - DrupalImage
+            - AddImage
+            - AddImagePreview
+            - AddImageGallery
+            - AddFontAwesome
+            - AddYouTube
+            - AddTable
+            - AddLink
+            - AddAnchor
+            - AddHeader
+            - AddIFrame
+            - AddHTML
+            - EditWidget
+            - DeleteWidget
+        -
+          name: Tools
+          items:
+            - Source
+  plugins:
+    language:
+      language_list: un
+    stylescombo:
+      styles: ''
+    N1EDEco:
+      enableN1EDEcoSystem: 'true'
+image_upload:
+  status: false
+  scheme: public
+  directory: inline-images
+  max_size: ''
+  max_dimensions:
+    width: null
+    height: null

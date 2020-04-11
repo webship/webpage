@@ -2,15 +2,16 @@ langcode: en
 status: true
 dependencies:
   module:
-    - layout_builder
+    - media
     - node
-id: node.layout_builder__layout
-field_name: layout_builder__layout
+id: node.field_media
+field_name: field_media
 entity_type: node
-type: layout_section
-settings: {  }
-module: layout_builder
-locked: true
+type: entity_reference
+settings:
+  target_type: media
+module: core
+locked: false
 cardinality: 1
 translatable: true
 indexes: {  }

@@ -1,6 +1,4 @@
 # Webpage
 
-
 Provides Webpage content type and related configuration.
-Use Webpage to add publicly accessible web pages
-with the Layout Builder
+Use Webpage to add publicly accessible web pages.
