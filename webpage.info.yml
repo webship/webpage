@@ -9,6 +9,8 @@ dependencies:
   - drupal:user
   - drupal:editor
   - drupal:ckeditor
+  - drupal:block
+  - drupal:block_content
   - drupal:field
   - drupal:file
   - drupal:filter
