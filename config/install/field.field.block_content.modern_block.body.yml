@@ -1,9 +1,8 @@
-uuid: 50463cd6-a57f-41a5-ba40-430debbe55b1
 langcode: en
 status: true
 dependencies:
   config:
-    - block_content.type.basic
+    - block_content.type.modern_block
     - field.storage.block_content.body
   module:
     - allowed_formats
@@ -15,10 +14,10 @@ third_party_settings:
     restricted_html: '0'
     full_html: '0'
     plain_text: '0'
-id: block_content.basic.body
+id: block_content.modern_block.body
 field_name: body
 entity_type: block_content
-bundle: basic
+bundle: modern_block
 label: body
 description: ''
 required: false

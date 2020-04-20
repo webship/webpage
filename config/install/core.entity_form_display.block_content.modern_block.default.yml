@@ -1,15 +1,14 @@
-uuid: da308982-d129-46b5-a2ab-80a985246016
 langcode: en
 status: true
 dependencies:
   config:
-    - block_content.type.basic
-    - field.field.block_content.basic.body
+    - block_content.type.modern_block
+    - field.field.block_content.modern_block.body
   module:
     - text
-id: block_content.basic.default
+id: block_content.modern_block.default
 targetEntityType: block_content
-bundle: basic
+bundle: modern_block
 mode: default
 content:
   body:
