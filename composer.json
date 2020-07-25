@@ -33,7 +33,6 @@
     "drupal/pathauto": "@stable",
     "drupal/n1ed": "@stable",
     "drupal/allowed_formats": "@stable",
-    "drupal/components": "@stable",
-    "drupal/radix_layouts": "@stable"
+    "drupal/components": "@stable"
   }
 }
