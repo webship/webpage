@@ -4,7 +4,6 @@ dependencies:
   config:
     - core.entity_view_mode.node.teaser
     - field.field.node.webpage.body
-    - field.field.node.webpage.field_media
     - node.type.webpage
   module:
     - user
@@ -20,4 +19,3 @@ content:
     third_party_settings: {  }
 hidden:
   body: true
-  field_media: true

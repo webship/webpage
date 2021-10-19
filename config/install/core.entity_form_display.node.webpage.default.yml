@@ -3,10 +3,8 @@ status: true
 dependencies:
   config:
     - field.field.node.webpage.body
-    - field.field.node.webpage.field_media
     - node.type.webpage
   module:
-    - media_library
     - path
     - text
 id: node.webpage.default
@@ -30,13 +28,6 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
-  field_media:
-    type: media_library_widget
-    weight: 1
-    settings:
-      media_types: {  }
-    third_party_settings: {  }
-    region: content
   path:
     type: path
     weight: 3
