@@ -1,7 +1,0 @@
-langcode: en
-status: true
-dependencies: {  }
-id: modern_block
-label: 'Modern block'
-revision: 0
-description: 'A modern block contains a title and a body with the modern HTML editor.'

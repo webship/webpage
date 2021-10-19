@@ -1,7 +1,7 @@
 name: Webpage
 description: 'Provides Webpage content type and related configuration. Use Webpage to add publicly accessible web pages.'
 type: module
-core_version_requirement: ^9.0
+core_version_requirement: ^9
 dependencies:
   - drupal:node
   - drupal:path
@@ -24,16 +24,14 @@ dependencies:
   - drupal:ckeditor
   - drupal:content_moderation
   - drupal:workflows
-  - pathauto:pathauto
   - ctools:ctools
   - ctools:ctools_block
   - ctools:ctools_views
   - entity:entity
   - token:token
+  - pathauto:pathauto
   - ds:ds
   - ds:ds_extras
   - field_group:field_group
   - smart_trim:smart_trim
-  - allowed_formats:allowed_formats
-  - components:components
-  - n1ed:n1ed
+
