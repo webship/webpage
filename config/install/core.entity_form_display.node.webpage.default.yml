@@ -3,10 +3,18 @@ status: true
 dependencies:
   config:
     - field.field.node.webpage.body
+    - field.field.node.webpage.layout_builder__layout
     - node.type.webpage
   module:
+    - field_layout
+    - layout_discovery
     - path
     - text
+third_party_settings:
+  field_layout:
+    id: layout_onecol
+    settings:
+      label: ''
 id: node.webpage.default
 targetEntityType: node
 bundle: webpage
@@ -73,4 +81,5 @@ content:
       match_limit: 10
     region: content
     third_party_settings: {  }
-hidden: {  }
+hidden:
+  layout_builder__layout: true

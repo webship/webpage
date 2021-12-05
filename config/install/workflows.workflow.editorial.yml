@@ -1,10 +1,12 @@
 langcode: en
 status: true
 dependencies:
+  config:
+    - node.type.webpage
   module:
     - content_moderation
 id: editorial
-label: 'Editorial'
+label: Editorial
 type: content_moderation
 type_settings:
   states:
@@ -56,4 +58,7 @@ type_settings:
       from:
         - draft
         - published
-  entity_types: {  }
+  entity_types:
+    node:
+      - webpage
+  default_moderation_state: draft

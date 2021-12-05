@@ -1,0 +1,33 @@
+{
+  "name": "drupal/webpage",
+  "description": "Provides Webpage content type and related configuration using the Layout Builder. Use Webpage to add publicly accessible web pages.",
+  "type": "drupal-module",
+  "license": "GPL-2.0-or-later",
+  "minimum-stability": "dev",
+  "authors": [
+    {
+      "name": "Webship",
+      "homepage": "http://webship.org",
+      "role": "Maintainer"
+    }
+  ],
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/webdev",
+    "source": "http://cgit.drupalcode.org/webdev"
+  },
+  "repositories": {
+    "drupal": {
+      "type": "composer",
+      "url": "https://packages.drupal.org/8"
+    }
+  },
+  "require": {
+    "drupal/core": "~9.0",
+    "drupal/ctools": "@stable",
+    "drupal/entity": "@stable",
+    "drupal/token": "@stable",
+    "drupal/pathauto": "@stable",
+    "drupal/field_group": "@stable",
+    "drupal/smart_trim": "@stable"
+  }
+}

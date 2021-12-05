@@ -3,10 +3,16 @@ status: true
 dependencies:
   config:
     - field.field.node.webpage.body
+    - field.field.node.webpage.layout_builder__layout
     - node.type.webpage
   module:
+    - layout_builder
     - text
     - user
+third_party_settings:
+  layout_builder:
+    allow_custom: false
+    enabled: false
 id: node.webpage.default
 targetEntityType: node
 bundle: webpage
@@ -20,4 +26,5 @@ content:
     type: text_default
     region: content
 hidden:
+  layout_builder__layout: true
   links: true

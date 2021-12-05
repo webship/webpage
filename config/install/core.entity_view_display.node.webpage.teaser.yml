@@ -1,21 +1,63 @@
 langcode: en
-status: false
+status: true
 dependencies:
   config:
     - core.entity_view_mode.node.teaser
     - field.field.node.webpage.body
+    - field.field.node.webpage.layout_builder__layout
     - node.type.webpage
   module:
+    - layout_builder
+    - layout_discovery
     - user
+third_party_settings:
+  layout_builder:
+    allow_custom: false
+    enabled: true
+    sections:
+      -
+        layout_id: layout_onecol
+        layout_settings:
+          label: ''
+          context_mapping: {  }
+        components:
+          5b0dc018-6493-4877-bff9-5d5d4c8df923:
+            uuid: 5b0dc018-6493-4877-bff9-5d5d4c8df923
+            region: content
+            configuration:
+              id: 'field_block:node:webpage:body'
+              label: Body
+              provider: layout_builder
+              label_display: '0'
+              formatter:
+                label: hidden
+                type: smart_trim
+                settings:
+                  trim_length: 300
+                  trim_type: chars
+                  trim_suffix: ''
+                  wrap_output: false
+                  wrap_class: trimmed
+                  more_link: true
+                  more_text: More
+                  more_class: more-link
+                  summary_handler: full
+                  trim_options:
+                    text: true
+                    trim_zero: true
+                third_party_settings: {  }
+              context_mapping:
+                entity: layout_builder.entity
+                view_mode: view_mode
+            additional: {  }
+            weight: 0
+        third_party_settings: {  }
 id: node.webpage.teaser
 targetEntityType: node
 bundle: webpage
 mode: teaser
-content:
-  links:
-    weight: 100
-    region: content
-    settings: {  }
-    third_party_settings: {  }
+content: {  }
 hidden:
   body: true
+  layout_builder__layout: true
+  links: true
