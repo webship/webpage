@@ -7,31 +7,19 @@ dependencies:
   - drupal:path
   - drupal:text
   - drupal:user
-  - drupal:editor
-  - drupal:ckeditor
   - drupal:block
   - drupal:block_content
   - drupal:field
-  - drupal:file
-  - drupal:filter
-  - drupal:file
-  - drupal:image
-  - drupal:responsive_image
-  - drupal:media
-  - drupal:media_library
-  - drupal:menu_ui
-  - drupal:editor
-  - drupal:ckeditor
+  - drupal:field_layout
   - drupal:content_moderation
   - drupal:workflows
+  - drupal:layout_builder
   - ctools:ctools
   - ctools:ctools_block
   - ctools:ctools_views
   - entity:entity
   - token:token
   - pathauto:pathauto
-  - ds:ds
-  - ds:ds_extras
   - field_group:field_group
   - smart_trim:smart_trim
 
