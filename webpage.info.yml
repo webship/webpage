@@ -1,7 +1,7 @@
 name: Webpage
 description: 'Provides Webpage content type and related configuration using the Layout Builder. Use Webpage to add publicly accessible web pages.'
 type: module
-core_version_requirement: ^9
+core_version_requirement: ^9 || ^10
 dependencies:
   - drupal:node
   - drupal:path
