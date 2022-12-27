@@ -7,13 +7,13 @@
   "authors": [
     {
       "name": "Webship",
-      "homepage": "http://webship.org",
+      "homepage": "https://webship.co",
       "role": "Maintainer"
     }
   ],
   "support": {
-    "issues": "https://www.drupal.org/project/issues/webdev",
-    "source": "http://cgit.drupalcode.org/webdev"
+    "issues": "https://www.drupal.org/project/issues/webpage",
+    "source": "http://cgit.drupalcode.org/webpage"
   },
   "repositories": {
     "drupal": {
@@ -23,11 +23,11 @@
   },
   "require": {
     "drupal/core": "~9.0",
-    "drupal/ctools": "@stable",
-    "drupal/entity": "@stable",
-    "drupal/token": "@stable",
-    "drupal/pathauto": "@stable",
-    "drupal/field_group": "@stable",
-    "drupal/smart_trim": "@stable"
+    "drupal/ctools": "~3.0",
+    "drupal/entity": "~1.0",
+    "drupal/token": "~1.0",
+    "drupal/pathauto": "~1.0",
+    "drupal/field_group": "~3.0",
+    "drupal/smart_trim": "~2.0"
   }
 }
