@@ -23,9 +23,6 @@
   },
   "require": {
     "drupal/core": "~10.0",
-    "drupal/ctools": "~3.0",
-    "drupal/entity": "~1.0",
-    "drupal/token": "~1.0",
     "drupal/pathauto": "~1.0",
     "drupal/field_group": "~3.0",
     "drupal/smart_trim": "~2.0"
