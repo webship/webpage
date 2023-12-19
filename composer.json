@@ -22,7 +22,8 @@
     }
   },
   "require": {
-    "drupal/core": "~10.1.0",
+    "drupal/core": "~10.2.0",
+    "drupal/webpatches": "~10.0",
     "drupal/pathauto": "~1.0",
     "drupal/field_group": "~3.0",
     "drupal/smart_trim": "~2.0"
