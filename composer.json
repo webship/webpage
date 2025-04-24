@@ -25,7 +25,7 @@
     "drupal/core": "~11.1.0",
     "drupal/webpatches": "11.0.x-dev",
     "drupal/pathauto": "~1.0",
-    "drupal/field_group": "~3.0",
+    "drupal/field_group": "~4.0",
     "drupal/smart_trim": "~2.0"
   }
 }
