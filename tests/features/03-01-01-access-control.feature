@@ -14,7 +14,7 @@ Feature: Access Control
     Then I should see "Access denied"
 
   Scenario: Admin user can access the content admin page
-    Given I am logged in as admin
+    Given I am a logged in user with the "Webmaster" user
     When I navigate to "/admin/content"
     Then I should see "Content"
      And I should see "Add content"

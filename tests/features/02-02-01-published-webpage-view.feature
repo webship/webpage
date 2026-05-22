@@ -4,7 +4,7 @@ Feature: Published webpage viewing
   So that I can consume the site content
 
   Scenario: A published webpage is reachable at its path alias
-    Given I am logged in as admin
+    Given I am a logged in user with the "Webmaster" user
     When I navigate to "/node/add/webpage"
      And I fill in "Company Overview" for "Title"
      And I select "Published" from "Save as"

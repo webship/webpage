@@ -4,7 +4,7 @@ Feature: Webpage in the content admin listing
   So that I can manage them
 
   Background:
-    Given I am logged in as admin
+    Given I am a logged in user with the "Webmaster" user
 
   Scenario: A new webpage appears in the admin content listing
     When I navigate to "/node/add/webpage"

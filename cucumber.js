@@ -13,6 +13,33 @@ module.exports = {
     ],
     worldParameters: {
       launchUrl: process.env.LAUNCH_URL || 'http://localhost',
+      // Test users for each Drupal Standard profile role.
+      //
+      // Webmaster is the site-install super-admin (created by `drush
+      // site:install ... --account-name=webmaster --account-pass=dD.123123ddd`).
+      // The rest are provisioned by `Given I add testing users` — see
+      // tests/step-definitions/webpage.steps.js — which iterates this
+      // registry and skips entries flagged `isAdmin: true`.
+      users: {
+        "Webmaster": {
+          "username": "webmaster",
+          "email": "webmaster@example.test",
+          "password": "dD.123123ddd",
+          "isAdmin": true,
+        },
+        "Content editor": {
+          "username": "content_editor_user",
+          "email": "content_editor_user@example.test",
+          "password": "dD.123123ddd",
+          "roles": ["content_editor"],
+        },
+        "Authenticated user": {
+          "username": "authenticated_user",
+          "email": "authenticated_user@example.test",
+          "password": "dD.123123ddd",
+          "roles": [],
+        },
+      },
       minWaitTime: {
         page: 3000,
         before_scenario: 0,

@@ -4,7 +4,7 @@ Feature: Webpage body field
   So that I can write the page content
 
   Background:
-    Given I am logged in as admin
+    Given I am a logged in user with the "Webmaster" user
 
   Scenario: The webpage add form exposes the Body field
     When I navigate to "/node/add/webpage"

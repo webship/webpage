@@ -66,8 +66,8 @@ stylelint:
     - name: $_CONFIG_DOCKERHUB_ROOT/$_TARGET_DB_TYPE-$_TARGET_DB_VERSION:$_TARGET_DB_IMAGE_TAG
       alias: database
   variables:
-    DRUPAL_ADMIN_USERNAME: "admin"
-    DRUPAL_ADMIN_PASSWORD: "admin"
+    DRUPAL_ADMIN_USERNAME: "webmaster"
+    DRUPAL_ADMIN_PASSWORD: "dD.123123ddd"
     DRUPAL_TEST_BASE_URL: "http://localhost"
     LAUNCH_URL: "http://localhost"
     FORCE_COLOR: "1"
@@ -85,13 +85,16 @@ stylelint:
     # ── Drupal site install ─────────────────────────────────────────────────
     - $CI_PROJECT_DIR/vendor/bin/drush --root=$CI_PROJECT_DIR/$_WEB_ROOT site:install standard
         --db-url=$SIMPLETEST_DB
-        --account-name=admin
-        --account-pass=admin
+        --account-name=webmaster
+        --account-pass=dD.123123ddd
         --site-name="Webpage Test"
         -y
     # ── Module install ──────────────────────────────────────────────────────
     - $CI_PROJECT_DIR/vendor/bin/drush --root=$CI_PROJECT_DIR/$_WEB_ROOT en webpage -y
     - $CI_PROJECT_DIR/vendor/bin/drush --root=$CI_PROJECT_DIR/$_WEB_ROOT cache:rebuild
+    # Per-role test users are provisioned by the first scenario in the suite
+    # (01-01-01-admin-login.feature, "Webmaster can log in and provision
+    # testing users"), so no separate drush step is needed here.
     # ── Node.js 20 ──────────────────────────────────────────────────────────
     - curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
     - apt-get install -y nodejs

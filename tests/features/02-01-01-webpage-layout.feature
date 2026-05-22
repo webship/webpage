@@ -4,7 +4,7 @@ Feature: Webpage Layout Builder
   So that I can build the layout of each web page
 
   Background:
-    Given I am logged in as admin
+    Given I am a logged in user with the "Webmaster" user
 
   Scenario: The webpage full display uses the Layout Builder
     When I navigate to "/admin/structure/types/manage/webpage/display/full"
