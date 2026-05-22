@@ -11,7 +11,7 @@ third_party_settings:
 name: Webpage
 type: webpage
 description: 'Use <em>Webpage</em> to add publicly accessible web pages.'
-help: ''
+help: 'Use <em>Webpage</em> to add a publicly accessible web page built with the Layout Builder.'
 new_revision: true
 preview_mode: 1
 display_submitted: false

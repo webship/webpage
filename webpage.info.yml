@@ -2,20 +2,3 @@ name: Webpage
 description: Provides Webpage content type and related configuration using the Layout Builder. Use Webpage to add publicly accessible web pages.
 type: module
 core_version_requirement: ~11.3.0
-dependencies:
-  - drupal:node
-  - drupal:path
-  - drupal:text
-  - drupal:user
-  - drupal:block
-  - drupal:block_content
-  - drupal:field
-  - drupal:field_layout
-  - drupal:content_moderation
-  - drupal:workflows
-  - drupal:layout_builder
-  - drupal:layout_discovery
-  - drupal:menu_ui
-  - pathauto:pathauto
-  - field_group:field_group
-  - smart_trim:smart_trim

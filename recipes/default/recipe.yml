@@ -1,0 +1,24 @@
+name: Webpage - Default
+description: A recipe to manage default installed modules, configs and permissions.
+type: install
+install:
+  - node
+  - path
+  - text
+  - user
+  - block
+  - block_content
+  - field
+  - field_layout
+  - content_moderation
+  - workflows
+  - layout_builder
+  - layout_discovery
+  - menu_ui
+  - pathauto
+  - field_group
+  - smart_trim
+config:
+  strict:
+    - field.storage.node.body
+    - field.storage.node.layout_builder__layout
