@@ -11,7 +11,8 @@ Feature: Webpage Layout Builder - add a section
      And I fill in "Layout Chooser" for "Title"
      And I press "Save"
     Then I should see "has been created"
-    When I click "Layout"
+    When I click "top-bar-page-actions" by "aria-controls" attr
+     And I click "Layout"
     Then I should see "Add section at end of layout"
     When I click "Add section at end of layout"
      And I wait for the modal to appear
@@ -26,7 +27,8 @@ Feature: Webpage Layout Builder - add a section
      And I fill in "Layout Saver" for "Title"
      And I press "Save"
     Then I should see "has been created"
-    When I click "Layout"
+    When I click "top-bar-page-actions" by "aria-controls" attr
+     And I click "Layout"
     Then I should see "Add section at end of layout"
     When I click "Add section at end of layout"
      And I wait for the modal to appear
