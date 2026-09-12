@@ -1,5 +1,5 @@
-name: Webpage - Default
-description: A recipe to manage default installed modules, configs and permissions.
+name: 'Webpage - Default'
+description: 'A recipe to manage default installed modules, configs and permissions.'
 type: install
 install:
   - node
@@ -9,16 +9,17 @@ install:
   - block
   - block_content
   - field
-  - field_layout
   - content_moderation
   - workflows
-  - layout_builder
-  - layout_discovery
   - menu_ui
   - pathauto
   - field_group
   - smart_trim
+  - display_builder
+  - display_builder_entity_view
 config:
   strict:
     - field.storage.node.body
-    - field.storage.node.layout_builder__layout
+  import:
+    display_builder:
+      - display_builder.profile.default
