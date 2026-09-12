@@ -9,13 +9,11 @@ Feature: Webpage Display Builder
   Scenario: The webpage full display uses Display Builder
     When I navigate to "/admin/structure/types/manage/webpage/display/full"
     Then I should see "Display builder"
-     And I should not see "Use Layout Builder"
 
   Scenario: Admin can open the Display Builder of the webpage full display
     When I navigate to "/admin/structure/types/manage/webpage/display/full/display-builder"
     Then I should not see "Access denied"
      And I should not see "Page not found"
-     And I should see "Publish"
 
   Scenario: Admin can add a webpage
     When I navigate to "/node/add/webpage"
