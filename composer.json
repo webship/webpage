@@ -27,6 +27,7 @@
     "drupal/pathauto": "~1.0",
     "drupal/field_group": "~4.0",
     "drupal/smart_trim": "~2.0",
-    "drupal/display_builder": "^1.0@beta"
+    "drupal/display_builder": "^1.0@beta",
+    "drupal/webform": "^6.3@beta"
   }
 }

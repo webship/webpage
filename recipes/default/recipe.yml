@@ -17,9 +17,77 @@ install:
   - smart_trim
   - display_builder
   - display_builder_entity_view
+  # Core content: images, dates, lists, menu links and views.
+  - image
+  - datetime
+  - options
+  - menu_link_content
+  - views
+  # Forms.
+  - webform
+  - webform_ui
 config:
   strict:
     - field.storage.node.body
   import:
     display_builder:
       - display_builder.profile.default
+    # The core content views, image styles and user view mode.
+    image:
+      - image.style.large
+      - image.style.thumbnail
+    node:
+      - views.view.archive
+      - views.view.content
+      - views.view.content_recent
+      - views.view.frontpage
+      - views.view.glossary
+    user:
+      - core.entity_view_mode.user.compact
+      - views.view.user_admin_people
+      - views.view.who_s_new
+      - views.view.who_s_online
+    webform:
+      - webform.webform.contact
+  actions:
+    # The contact webform, at /form/contact.
+    webform.webform.contact:
+      simpleConfigUpdate:
+        description: '<p>Contact us.</p>'
+        elements: |-
+          contact_paragraph:
+            '#type': webform_markup
+            '#markup': "<h3>We'd love to talk to you</h3><p>Leave us your details and we will contact you soon.</p>"
+          layout_1:
+            '#type': webform_flexbox
+            name:
+              '#type': textfield
+              '#title': 'Your Name'
+              '#placeholder': 'Your full name'
+              '#required': true
+              '#default_value': '[current-user:display-name]'
+            company_name:
+              '#type': textfield
+              '#title': 'Company name'
+              '#placeholder': 'Your company name'
+          layout_2:
+            '#type': webform_flexbox
+            email:
+              '#type': email
+              '#title': 'Business email'
+              '#placeholder': 'Your business email'
+              '#required': true
+              '#default_value': '[current-user:mail]'
+            phone_number:
+              '#type': textfield
+              '#title': 'Phone number'
+              '#placeholder': 'Your phone number'
+          message:
+            '#type': textarea
+            '#title': 'Your message'
+            '#placeholder': 'Your message'
+            '#required': true
+          actions:
+            '#type': webform_actions
+            '#title': 'Submit button(s)'
+            '#submit__label': Submit
