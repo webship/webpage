@@ -26,6 +26,8 @@ install:
   # Forms.
   - webform
   - webform_ui
+  # Last, after its dependencies: the Web Page module itself.
+  - webpage
 config:
   strict:
     - field.storage.node.body
