@@ -93,3 +93,10 @@ config:
             '#type': webform_actions
             '#title': 'Submit button(s)'
             '#submit__label': Submit
+        # The form has no subject field. The confirmation goes to the email
+        # the visitor typed, as in the contact template of Webform: an
+        # anonymous visitor has no account email.
+        handlers.email_confirmation.settings.to_mail: '[webform_submission:values:email:raw]'
+        handlers.email_confirmation.settings.subject: '[webform:title]'
+        handlers.email_notification.settings.subject: '[webform:title]: [webform_submission:values:name:raw]'
+        handlers.email_notification.settings.reply_to: '[webform_submission:values:email:raw]'
