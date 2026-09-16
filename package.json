@@ -1,7 +1,7 @@
 {
   "name": "webpage",
   "private": true,
-  "description": "Provides Webpage content type and related configuration using the Layout Builder. Use Webpage to add publicly accessible web pages.",
+  "description": "Provides Webpage content type and related configuration using Display Builder. Use Webpage to add publicly accessible web pages.",
   "license": "GPL-2.0",
   "engines": {
     "yarn": ">= 1.6",
