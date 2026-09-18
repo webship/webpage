@@ -3,7 +3,6 @@
   "description": "Provides Webpage content type and related configuration using the Display Builder. Use Webpage to add publicly accessible web pages.",
   "type": "drupal-module",
   "license": "GPL-2.0-or-later",
-  "minimum-stability": "dev",
   "authors": [
     {
       "name": "Webship",
