@@ -2,11 +2,29 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.node.webpage.body
-    - node.type.webpage
+  - field.field.node.webpage.body
+  - node.type.webpage
   module:
-    - text
-    - user
+  - display_builder
+  - text
+  - user
+third_party_settings:
+  display_builder:
+    profile: default
+    sources:
+    - source_id: entity_field
+      source:
+        derivable_context: 'field:node:webpage:body'
+        'field:node:webpage:body':
+          value:
+            sources:
+            - source_id: 'field_formatter:node:webpage:body'
+              source:
+                type: text_default
+                label: hidden
+                settings: {}
+                third_party_settings: {}
+                weight: 0
 id: node.webpage.default
 targetEntityType: node
 bundle: webpage
@@ -15,8 +33,8 @@ content:
   body:
     weight: 1
     label: hidden
-    settings: {  }
-    third_party_settings: {  }
+    settings: {}
+    third_party_settings: {}
     type: text_default
     region: content
 hidden:
