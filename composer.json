@@ -27,5 +27,12 @@
     "drupal/smart_trim": "~2.0",
     "drupal/display_builder": "^1.0@beta",
     "drupal/webform": "^6.3"
+  },
+  "conflict": {
+    "drupal/webapi_starter": "<2.0.6",
+    "drupal/webship_portal": "<1.0.7",
+    "drupal/webship_starter": "<1.0.7",
+    "drupal/webships_starter": "<2.0.5",
+    "drupal/website_starter": "<1.0.7"
   }
 }
