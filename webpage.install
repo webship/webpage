@@ -23,3 +23,150 @@ function webpage_install($is_syncing) {
     RecipeRunner::processRecipe(Recipe::createFromDirectory(__DIR__ . '/recipes/default'));
   }
 }
+
+/**
+ * Switches the node body field from text with summary to long text.
+ *
+ * Drupal 12 moved the "Text (formatted, long, with summary)" field type out
+ * of core. The body field is shared by every content type, so the update
+ * converts it for the whole site, once, whichever Webship module runs first.
+ * A site whose content holds summaries keeps the field as it is: converting
+ * would drop them. On Drupal 12 such a site needs drupal/text_with_summary.
+ */
+function webpage_update_12001(): string {
+  return _webpage_body_text_long();
+}
+
+/**
+ * Converts the node body field storage to text_long, when that loses no data.
+ *
+ * @return string
+ *   A message for the update report.
+ */
+function _webpage_body_text_long(): string {
+  $config_factory = \Drupal::configFactory();
+  $storage = $config_factory->getEditable('field.storage.node.body');
+  if ($storage->isNew() || $storage->get('type') !== 'text_with_summary') {
+    return (string) t('The body field is not a text with summary field: nothing to do.');
+  }
+
+  $database = \Drupal::database();
+  $schema = $database->schema();
+  $tables = ['node__body', 'node_revision__body'];
+  foreach ($tables as $table) {
+    if (!$schema->fieldExists($table, 'body_summary')) {
+      continue;
+    }
+    $summaries = $database->select($table, 't')
+      ->isNotNull('t.body_summary')
+      ->condition('t.body_summary', '', '<>')
+      ->countQuery()
+      ->execute()
+      ->fetchField();
+    if ($summaries) {
+      return (string) t('The body field keeps its summaries: @count rows in @table have one. On Drupal 12 the site needs the drupal/text_with_summary module.', [
+        '@count' => $summaries,
+        '@table' => $table,
+      ]);
+    }
+  }
+
+  // The field storage, and every field of the body storage.
+  $storage->set('type', 'text_long')->save(TRUE);
+  foreach ($config_factory->listAll('field.field.node.') as $name) {
+    $field = $config_factory->getEditable($name);
+    if ($field->get('field_name') !== 'body' || $field->get('field_type') !== 'text_with_summary') {
+      continue;
+    }
+    $settings = $field->get('settings') ?? [];
+    unset($settings['display_summary'], $settings['required_summary']);
+    $field->set('field_type', 'text_long')->set('settings', $settings)->save(TRUE);
+  }
+
+  // The form widgets and the formatters of the body field.
+  $plugins = [
+    'text_textarea_with_summary' => 'text_textarea',
+    'text_summary_or_trimmed' => 'text_trimmed',
+  ];
+  $names = [
+    ...$config_factory->listAll('core.entity_form_display.node.'),
+    ...$config_factory->listAll('core.entity_view_display.node.'),
+    ...$config_factory->listAll('views.view.'),
+  ];
+  foreach ($names as $name) {
+    $config = $config_factory->getEditable($name);
+    $data = $config->getRawData();
+    if (_webpage_body_text_long_replace($data, $plugins)) {
+      $config->setData($data)->save(TRUE);
+    }
+  }
+
+  // The database tables: the summary column goes.
+  foreach ($tables as $table) {
+    if ($schema->fieldExists($table, 'body_summary')) {
+      $schema->dropField($table, 'body_summary');
+    }
+  }
+
+  // The entity schema the site keeps for node: the new field storage, and its
+  // column list without the summary.
+  \Drupal::entityTypeManager()->getStorage('field_storage_config')->resetCache();
+  \Drupal::service('entity_field.manager')->clearCachedFieldDefinitions();
+  $repository = \Drupal::service('entity.last_installed_schema.repository');
+  $definitions = $repository->getLastInstalledFieldStorageDefinitions('node');
+  $new_definitions = \Drupal::service('entity_field.manager')->getFieldStorageDefinitions('node');
+  if (isset($new_definitions['body'])) {
+    $definitions['body'] = $new_definitions['body'];
+    $repository->setLastInstalledFieldStorageDefinitions('node', $definitions);
+  }
+  $key_value = \Drupal::keyValue('entity.storage_schema.sql');
+  $schema_data = $key_value->get('node.field_schema_data.body');
+  if (is_array($schema_data)) {
+    foreach ($schema_data as &$table_schema) {
+      unset($table_schema['fields']['body_summary']);
+    }
+    unset($table_schema);
+    $key_value->set('node.field_schema_data.body', $schema_data);
+  }
+  drupal_flush_all_caches();
+
+  return (string) t('The body field is now a long text field.');
+}
+
+/**
+ * Replaces the summary widget and formatter used for the body field.
+ *
+ * @param array $data
+ *   Config data, changed in place.
+ * @param array $plugins
+ *   Replacement plugin IDs, keyed by the plugin ID they replace.
+ *
+ * @return bool
+ *   TRUE when something changed.
+ */
+function _webpage_body_text_long_replace(array &$data, array $plugins): bool {
+  $changed = FALSE;
+  foreach ($data as $key => &$value) {
+    if (!is_array($value)) {
+      continue;
+    }
+    $is_body = $key === 'body'
+      || ($value['field'] ?? NULL) === 'body'
+      || str_ends_with((string) ($value['source_id'] ?? ''), ':body');
+    $type = $value['type'] ?? NULL;
+    if ($is_body && is_string($type) && isset($plugins[$type])) {
+      $value['type'] = $plugins[$type];
+      unset($value['settings']['summary_rows'], $value['settings']['show_summary']);
+      if (($value['click_sort_column'] ?? NULL) === 'summary') {
+        $value['click_sort_column'] = 'value';
+      }
+      $changed = TRUE;
+    }
+    if (isset($value['source']['type']) && str_ends_with((string) ($value['source_id'] ?? ''), ':body') && isset($plugins[$value['source']['type']])) {
+      $value['source']['type'] = $plugins[$value['source']['type']];
+      $changed = TRUE;
+    }
+    $changed = _webpage_body_text_long_replace($value, $plugins) || $changed;
+  }
+  return $changed;
+}

@@ -38,23 +38,22 @@ config:
     image:
       - image.style.large
       - image.style.thumbnail
+    # Drupal 12 no longer ships the archive, recent content, front page,
+    # glossary, who's new and who's online views: this recipe ships them in
+    # its config directory.
     node:
-      - views.view.archive
       - views.view.content
-      - views.view.content_recent
-      - views.view.frontpage
-      - views.view.glossary
     user:
       - core.entity_view_mode.user.compact
       - views.view.user_admin_people
-      - views.view.who_s_new
-      - views.view.who_s_online
     webform:
       - webform.webform.contact
   actions:
     # The contact webform, at /form/contact.
     webform.webform.contact:
-      simpleConfigUpdate:
+      # A webform is a config entity: Drupal 12 refuses simpleConfigUpdate on
+      # it, setProperties works on Drupal 11 and 12.
+      setProperties:
         description: '<p>Contact us.</p>'
         elements: |-
           contact_paragraph:
