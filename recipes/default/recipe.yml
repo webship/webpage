@@ -30,7 +30,8 @@ install:
   - webpage
 config:
   strict:
-    - field.storage.node.body
+    - field.storage.node.field_body
+    - field.storage.node.field_summary
   import:
     display_builder:
       - display_builder.profile.default

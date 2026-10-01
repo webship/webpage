@@ -2,12 +2,12 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.node.body
+    - field.storage.node.field_body
     - node.type.webpage
   module:
     - text
-id: node.webpage.body
-field_name: body
+id: node.webpage.field_body
+field_name: field_body
 entity_type: node
 bundle: webpage
 label: Body
@@ -17,6 +17,5 @@ translatable: true
 default_value: {  }
 default_value_callback: ''
 settings:
-  display_summary: false
-  required_summary: false
-field_type: text_with_summary
+  allowed_formats: {  }
+field_type: text_long

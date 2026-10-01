@@ -3,11 +3,12 @@ status: true
 dependencies:
   config:
     - core.entity_view_mode.node.full
-    - field.field.node.webpage.body
+    - field.field.node.webpage.field_body
+    - field.field.node.webpage.field_summary
     - node.type.webpage
   module:
     - display_builder
-    - user
+    - manage_display
 third_party_settings:
   display_builder:
     profile: default
@@ -15,12 +16,12 @@ third_party_settings:
       -
         source_id: entity_field
         source:
-          derivable_context: 'field:node:webpage:body'
-          'field:node:webpage:body':
+          derivable_context: 'field:node:webpage:field_body'
+          'field:node:webpage:field_body':
             value:
               sources:
                 -
-                  source_id: 'field_formatter:node:webpage:body'
+                  source_id: 'field_formatter:node:webpage:field_body'
                   source:
                     type: text_default
                     label: hidden
@@ -32,10 +33,28 @@ targetEntityType: node
 bundle: webpage
 mode: full
 content:
-  links:
-    weight: 100
-    region: content
+  content_moderation_control:
     settings: {  }
     third_party_settings: {  }
+    weight: -20
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+  title:
+    type: title
+    label: hidden
+    settings:
+      link_to_entity: true
+      link_rel: canonical
+      tag: h2
+    third_party_settings: {  }
+    weight: -49
+    region: content
 hidden:
-  body: true
+  created: true
+  field_body: true
+  field_summary: true
+  uid: true

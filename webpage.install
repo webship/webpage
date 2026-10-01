@@ -23,3 +23,400 @@ function webpage_install($is_syncing) {
     RecipeRunner::processRecipe(Recipe::createFromDirectory(__DIR__ . '/recipes/default'));
   }
 }
+
+/**
+ * Moves Webpage from the core body field to its own body and summary fields.
+ *
+ * Drupal 12 moved the "Text (formatted, long, with summary)" field type out
+ * of core. Webpage now uses its own "Body" (field_body, long text) and
+ * "Summary" (field_summary, plain text) fields, so it never depends on that
+ * field type. The update copies the body and its summary of every revision
+ * and language, switches the displays, views and Display Builder sources to
+ * the new fields, and removes the core body field from Webpage only.
+ */
+function webpage_update_12002(array &$sandbox): string {
+  return _web_own_body_fields_update(['webpage'], $sandbox);
+}
+
+if (!function_exists('_web_own_body_fields_update')) {
+
+  /**
+   * Moves bundles of node from body to field_body and field_summary.
+   *
+   * Shared by the Webship content type modules; each one passes its bundles.
+   *
+   * @param string[] $bundles
+   *   The node bundles to move.
+   * @param array $sandbox
+   *   The update sandbox.
+   *
+   * @return string
+   *   A message for the update report.
+   */
+  function _web_own_body_fields_update(array $bundles, array &$sandbox): string {
+    $entity_type_manager = \Drupal::entityTypeManager();
+    $field_config_storage = $entity_type_manager->getStorage('field_config');
+    $bundles = array_values(array_filter($bundles, static fn (string $bundle): bool => (bool) $entity_type_manager->getStorage('node_type')->load($bundle)));
+    $moved = array_values(array_filter($bundles, static fn (string $bundle): bool => (bool) $field_config_storage->load("node.$bundle.body")));
+
+    if (!isset($sandbox['step'])) {
+      if (!$moved) {
+        $sandbox['#finished'] = 1;
+        return (string) t('No content type to move to its own body field.');
+      }
+      _web_own_body_fields_create($moved);
+      $sandbox['bundles'] = $moved;
+      $sandbox['step'] = 'copy';
+      $sandbox['last'] = 0;
+      $sandbox['copied'] = 0;
+      $sandbox['max'] = (int) \Drupal::database()->select('node_revision__body', 'b')
+        ->condition('b.bundle', $moved, 'IN')
+        ->countQuery()->execute()->fetchField();
+    }
+
+    if ($sandbox['step'] === 'copy') {
+      $database = \Drupal::database();
+      $rows = $database->select('node_revision__body', 'b')
+        ->fields('b')
+        ->condition('b.bundle', $sandbox['bundles'], 'IN')
+        ->condition('b.revision_id', $sandbox['last'], '>')
+        ->orderBy('b.revision_id')
+        ->range(0, 200)
+        ->execute()
+        ->fetchAll();
+      $rows = array_map(static fn (object $row): array => (array) $row, $rows);
+      $current = [];
+      if ($rows) {
+        $current = array_flip($database->select('node_field_data', 'n')
+          ->fields('n', ['vid'])
+          ->condition('n.vid', array_column($rows, 'revision_id'), 'IN')
+          ->execute()->fetchCol());
+      }
+      foreach ($rows as $row) {
+        $keys = [
+          'entity_id' => $row['entity_id'],
+          'revision_id' => $row['revision_id'],
+          'langcode' => $row['langcode'],
+          'delta' => $row['delta'],
+          'deleted' => 0,
+        ];
+        $summary = trim((string) ($row['body_summary'] ?? ''));
+        if ($summary === '') {
+          $summary = _web_own_body_fields_summary((string) $row['body_value']);
+        }
+        $values = [
+          'field_body' => ['field_body_value' => $row['body_value'], 'field_body_format' => $row['body_format']],
+          'field_summary' => ['field_summary_value' => $summary],
+        ];
+        foreach ($values as $field => $columns) {
+          if ($field === 'field_summary' && $summary === '') {
+            continue;
+          }
+          $tables = ["node_revision__$field"];
+          if (isset($current[$row['revision_id']])) {
+            $tables[] = "node__$field";
+          }
+          foreach ($tables as $table) {
+            $database->merge($table)
+              ->keys($keys)
+              ->fields(['bundle' => $row['bundle']] + $columns)
+              ->execute();
+          }
+        }
+        $sandbox['last'] = $row['revision_id'];
+        $sandbox['copied']++;
+      }
+      if (count($rows) === 200) {
+        $sandbox['#finished'] = $sandbox['max'] ? min(0.99, $sandbox['copied'] / $sandbox['max']) : 0.5;
+        return (string) t('Copied @count of @max body values.', ['@count' => $sandbox['copied'], '@max' => $sandbox['max']]);
+      }
+      $sandbox['step'] = 'config';
+    }
+
+    // The displays, views and Display Builder sources, then the old field.
+    $names = _web_own_body_fields_switch_config($sandbox['bundles']);
+    foreach ($sandbox['bundles'] as $bundle) {
+      $field_config_storage->load("node.$bundle.body")?->delete();
+    }
+    // Save the changed displays and views through their entities, so their
+    // dependencies are calculated again.
+    $config_manager = \Drupal::service('config.manager');
+    foreach ($names as $name) {
+      $config_manager->loadConfigEntityByName($name)?->save();
+    }
+    $entity_type_manager->getStorage('node')->resetCache();
+    $sandbox['#finished'] = 1;
+    return (string) t('Moved @bundles to their own body and summary fields: @count body values copied.', [
+      '@bundles' => implode(', ', $sandbox['bundles']),
+      '@count' => $sandbox['copied'],
+    ]);
+  }
+
+  /**
+   * Creates the field_body and field_summary storages and fields.
+   *
+   * @param string[] $bundles
+   *   The node bundles.
+   */
+  function _web_own_body_fields_create(array $bundles): void {
+    $entity_type_manager = \Drupal::entityTypeManager();
+    $storage_storage = $entity_type_manager->getStorage('field_storage_config');
+    $field_storage = $entity_type_manager->getStorage('field_config');
+    $types = ['field_body' => 'text_long', 'field_summary' => 'string_long'];
+    $labels = ['field_body' => 'Body', 'field_summary' => 'Summary'];
+    foreach ($types as $name => $type) {
+      if (!$storage_storage->load("node.$name")) {
+        $storage_storage->create([
+          'field_name' => $name,
+          'entity_type' => 'node',
+          'type' => $type,
+          'cardinality' => 1,
+          'translatable' => TRUE,
+        ])->save();
+      }
+      foreach ($bundles as $bundle) {
+        if (!$field_storage->load("node.$bundle.$name")) {
+          $body = $field_storage->load("node.$bundle.body");
+          $field_storage->create([
+            'field_name' => $name,
+            'entity_type' => 'node',
+            'bundle' => $bundle,
+            'label' => $name === 'field_body' && $body ? $body->label() : $labels[$name],
+            'description' => $name === 'field_summary' ? 'Shown in lists and teasers. Left empty, the first paragraph of the body is used.' : '',
+            'required' => FALSE,
+            'translatable' => TRUE,
+          ])->save();
+        }
+      }
+    }
+  }
+
+  /**
+   * Builds a plain text summary from the first paragraph of a body.
+   *
+   * @param string $body
+   *   The body HTML.
+   *
+   * @return string
+   *   Up to 200 characters, cut at a word boundary.
+   */
+  function _web_own_body_fields_summary(string $body): string {
+    $text = $body;
+    if (preg_match('#<p[^>]*>(.*?)</p>#is', $body, $match)) {
+      $text = $match[1];
+    }
+    $text = trim(preg_replace('/\s+/u', ' ', html_entity_decode(strip_tags($text), ENT_QUOTES | ENT_HTML5)));
+    if (mb_strlen($text) > 200) {
+      $text = mb_substr($text, 0, 200);
+      $space = mb_strrpos($text, ' ');
+      $text = rtrim(mb_substr($text, 0, $space ?: 200), " ,.;:") . '…';
+    }
+    return $text;
+  }
+
+  /**
+   * Points the displays, views and Display Builder sources at the new fields.
+   *
+   * Teasers and the summary formatters move to field_summary, everything else
+   * to field_body.
+   *
+   * @param string[] $bundles
+   *   The node bundles.
+   *
+   * @return string[]
+   *   The names of the changed config.
+   */
+  function _web_own_body_fields_switch_config(array $bundles): array {
+    $config_factory = \Drupal::configFactory();
+    $names = [];
+    foreach ($bundles as $bundle) {
+      // Form displays: a body widget and a summary widget.
+      foreach ($config_factory->listAll("core.entity_form_display.node.$bundle.") as $name) {
+        $config = $config_factory->getEditable($name);
+        $content = $config->get('content') ?? [];
+        if (isset($content['body'])) {
+          $body = $content['body'];
+          $content['field_body'] = [
+            'type' => 'text_textarea',
+            'weight' => $body['weight'] ?? 0,
+            'region' => $body['region'] ?? 'content',
+            'settings' => ['rows' => $body['settings']['rows'] ?? 9, 'placeholder' => ''],
+            'third_party_settings' => [],
+          ];
+          $content['field_summary'] = [
+            'type' => 'string_textarea',
+            'weight' => ($body['weight'] ?? 0) + 1,
+            'region' => $body['region'] ?? 'content',
+            'settings' => ['rows' => 3, 'placeholder' => ''],
+            'third_party_settings' => [],
+          ];
+          unset($content['body']);
+          $config->set('content', $content);
+          $hidden = $config->get('hidden') ?? [];
+          unset($hidden['body']);
+          $dependencies = $config->get('dependencies.config') ?? [];
+          $config->set('dependencies.config', array_values(array_diff($dependencies, ["field.field.node.$bundle.body"])));
+          $config->set('hidden', $hidden)->save(TRUE);
+          $names[] = $name;
+        }
+      }
+      // View displays, with their Display Builder sources.
+      foreach ($config_factory->listAll("core.entity_view_display.node.$bundle.") as $name) {
+        $config = $config_factory->getEditable($name);
+        $data = $config->getRawData();
+        $summary = ($data['mode'] ?? '') === 'teaser';
+        if (_web_own_body_fields_replace($data, $bundle, $summary)) {
+          $config->setData($data)->save(TRUE);
+          $names[] = $name;
+        }
+      }
+    }
+    // Views listing these bundles.
+    foreach ($config_factory->listAll('views.view.') as $name) {
+      $config = $config_factory->getEditable($name);
+      $data = $config->getRawData();
+      if (!str_contains(json_encode($data), 'node__body')) {
+        continue;
+      }
+      $listed = [];
+      array_walk_recursive($data, static function ($value, $key) use (&$listed, $bundles): void {
+        if (is_string($value) && in_array($value, $bundles, TRUE)) {
+          $listed[] = $value;
+        }
+      });
+      if ($listed && _web_own_body_fields_replace_view($data)) {
+        $config->setData($data)->save(TRUE);
+        $names[] = $name;
+      }
+    }
+    // Saved Display Builder instances of these bundles.
+    if (\Drupal::entityTypeManager()->hasDefinition('display_builder_instance')) {
+      $storage = \Drupal::entityTypeManager()->getStorage('display_builder_instance');
+      foreach ($storage->loadMultiple() as $instance) {
+        foreach ($bundles as $bundle) {
+          if (!str_contains($instance->id(), "__node__{$bundle}__") && !str_ends_with($instance->id(), "__node__$bundle")) {
+            continue;
+          }
+          $sources = $instance->get('sources')->getValue();
+          $summary = str_ends_with($instance->id(), '__teaser');
+          if (_web_own_body_fields_replace($sources, $bundle, $summary)) {
+            $instance->set('sources', $sources)->save();
+          }
+        }
+      }
+    }
+    return $names;
+  }
+
+  /**
+   * Replaces the body references of one bundle in display data.
+   *
+   * @param array $data
+   *   Display or Display Builder data, changed in place.
+   * @param string $bundle
+   *   The node bundle.
+   * @param bool $summary
+   *   TRUE to point at field_summary (teasers), FALSE for field_body.
+   *
+   * @return bool
+   *   TRUE when something changed.
+   */
+  function _web_own_body_fields_replace(array &$data, string $bundle, bool $summary): bool {
+    $changed = FALSE;
+    $field = $summary ? 'field_summary' : 'field_body';
+    $summary_formatters = ['text_summary_or_trimmed', 'smart_trim', 'text_trimmed'];
+    // The display component.
+    if (isset($data['content']['body'])) {
+      $component = $data['content']['body'];
+      $to_summary = $summary || in_array($component['type'] ?? '', ['text_summary_or_trimmed'], TRUE);
+      $data['content'][$to_summary ? 'field_summary' : 'field_body'] = $to_summary
+        ? ['type' => 'basic_string', 'settings' => []] + $component
+        : $component;
+      unset($data['content']['body']);
+      $changed = TRUE;
+    }
+    if (isset($data['hidden']['body'])) {
+      unset($data['hidden']['body']);
+      $data['hidden'][$field] = TRUE;
+      $changed = TRUE;
+    }
+    if (isset($data['dependencies']['config'])) {
+      // The entity save that follows calculates the new dependencies.
+      $before = count($data['dependencies']['config']);
+      $data['dependencies']['config'] = array_values(array_diff($data['dependencies']['config'], ["field.field.node.$bundle.body"]));
+      $changed = $changed || $before !== count($data['dependencies']['config']);
+    }
+    // Display Builder sources: context and formatter IDs and their settings.
+    $walk = static function (array &$item) use (&$walk, &$changed, $bundle, $field, $summary_formatters): void {
+      foreach ($item as $key => &$value) {
+        if (is_string($key) && $key === "field:node:$bundle:body") {
+          $item["field:node:$bundle:$field"] = $value;
+          unset($item[$key]);
+          $changed = TRUE;
+          $walk($item["field:node:$bundle:$field"]);
+          continue;
+        }
+        if (is_string($value)) {
+          $new = str_replace(["field:node:$bundle:body", "field_formatter:node:$bundle:body"], ["field:node:$bundle:$field", "field_formatter:node:$bundle:$field"], $value);
+          if ($new !== $value) {
+            $value = $new;
+            $changed = TRUE;
+          }
+          continue;
+        }
+        if (is_array($value)) {
+          if ($field === 'field_summary' && isset($value['source_id'], $value['source']['type']) && $value['source_id'] === "field_formatter:node:$bundle:$field" && in_array($value['source']['type'], $summary_formatters, TRUE)) {
+            $value['source']['type'] = 'basic_string';
+            $value['source']['settings'] = [];
+            $changed = TRUE;
+          }
+          $walk($value);
+        }
+      }
+    };
+    $walk($data);
+    return $changed;
+  }
+
+  /**
+   * Replaces the body field handlers of a view with the summary field.
+   *
+   * @param array $data
+   *   The view config, changed in place.
+   *
+   * @return bool
+   *   TRUE when something changed.
+   */
+  function _web_own_body_fields_replace_view(array &$data): bool {
+    $changed = FALSE;
+    foreach ($data['display'] ?? [] as $display_id => $display) {
+      foreach (['fields', 'sorts', 'filters'] as $type) {
+        foreach ($display['display_options'][$type] ?? [] as $id => $handler) {
+          if (($handler['table'] ?? '') !== 'node__body') {
+            continue;
+          }
+          $summary = in_array($handler['type'] ?? '', ['text_summary_or_trimmed', 'smart_trim'], TRUE);
+          $field = $summary ? 'field_summary' : 'field_body';
+          $handler['table'] = "node__$field";
+          $handler['field'] = $field === 'field_summary' ? 'field_summary' : ($handler['field'] === 'body' ? 'field_body' : $handler['field']);
+          if ($summary) {
+            $handler['type'] = 'basic_string';
+            $handler['settings'] = [];
+            $handler['click_sort_column'] = 'value';
+          }
+          $new_id = $id === 'body' ? $field : $id;
+          $handler['id'] = $new_id;
+          // Keep the order of the handlers.
+          $handlers = [];
+          foreach ($data['display'][$display_id]['display_options'][$type] as $key => $existing) {
+            $handlers[$key === $id ? $new_id : $key] = $key === $id ? $handler : $existing;
+          }
+          $data['display'][$display_id]['display_options'][$type] = $handlers;
+          $changed = TRUE;
+        }
+      }
+    }
+    return $changed;
+  }
+
+}

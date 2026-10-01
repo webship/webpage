@@ -2,40 +2,62 @@ langcode: en
 status: true
 dependencies:
   config:
-  - field.field.node.webpage.body
-  - node.type.webpage
+    - field.field.node.webpage.field_body
+    - field.field.node.webpage.field_summary
+    - node.type.webpage
   module:
-  - display_builder
-  - text
-  - user
+    - display_builder
+    - manage_display
+    - text
 third_party_settings:
   display_builder:
     profile: default
     sources:
-    - source_id: entity_field
-      source:
-        derivable_context: 'field:node:webpage:body'
-        'field:node:webpage:body':
-          value:
-            sources:
-            - source_id: 'field_formatter:node:webpage:body'
-              source:
-                type: text_default
-                label: hidden
-                settings: {}
-                third_party_settings: {}
-                weight: 0
+      -
+        source_id: entity_field
+        source:
+          derivable_context: 'field:node:webpage:field_body'
+          'field:node:webpage:field_body':
+            value:
+              sources:
+                -
+                  source_id: 'field_formatter:node:webpage:field_body'
+                  source:
+                    type: text_default
+                    label: hidden
+                    settings: {  }
+                    third_party_settings: {  }
+                    weight: 0
 id: node.webpage.default
 targetEntityType: node
 bundle: webpage
 mode: default
 content:
-  body:
-    weight: 1
-    label: hidden
-    settings: {}
-    third_party_settings: {}
+  content_moderation_control:
+    settings: {  }
+    third_party_settings: {  }
+    weight: -20
+    region: content
+  field_body:
     type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  title:
+    type: title
+    label: hidden
+    settings:
+      link_to_entity: true
+      link_rel: canonical
+      tag: h2
+    third_party_settings: {  }
+    weight: -49
     region: content
 hidden:
+  created: true
+  field_body: true
+  field_summary: true
   links: true
+  uid: true
