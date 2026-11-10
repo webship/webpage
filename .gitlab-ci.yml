@@ -122,6 +122,10 @@ stylelint:
     # ── Module install ──────────────────────────────────────────────────────
     - $CI_PROJECT_DIR/vendor/bin/drush --root=$CI_PROJECT_DIR/$_WEB_ROOT en webpage -y
     - $CI_PROJECT_DIR/vendor/bin/drush --root=$CI_PROJECT_DIR/$_WEB_ROOT cache:rebuild
+    # The Update Manager can show "There is a security update available for your version of Drupal" as an
+    # error message on admin pages, and the step pack's `I add the testing users` reads any error message
+    # after the submit as a failed account creation. The suite does not use the Update Manager.
+    - $CI_PROJECT_DIR/vendor/bin/drush --root=$CI_PROJECT_DIR/$_WEB_ROOT pm:uninstall update -y
     # Per-role test users are provisioned by the first scenario in the suite
     # (01-01-01-admin-login.feature, "Webmaster can log in and provision
     # testing users"), so no separate drush step is needed here.
