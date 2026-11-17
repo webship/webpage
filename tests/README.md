@@ -68,6 +68,8 @@ steps that send a request outside the browser.
 `@standard-profile` marks the scenarios that check what the module grants
 on a Standard site; the Webship site templates let content editors do more,
 so the run on a Webship site leaves them out (CI runs them).
+`@role-switch` marks the scenario that logs in a second time: a visitor
+sends the contact form, then the Webmaster removes the submission.
 `yarn test:dry` checks that every step resolves to one definition, without
 a browser.
 
@@ -75,7 +77,7 @@ a browser.
 
 ```
 26 scenarios (26 passed)
-127 steps (127 passed)
+133 steps (133 passed)
 ```
 
 The HTML report is written to `tests/reports/cucumber_report.html`. A failed
