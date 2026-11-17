@@ -11,13 +11,13 @@ Feature: Webpage Display Builder
     Then I should see "Display builder"
 
   Scenario: Admin can open the Display Builder of the webpage full display
-    When I navigate to "/admin/structure/types/manage/webpage/display/full/display-builder"
-    Then I should not see "Access denied"
-     And I should not see "Page not found"
+    Then I should be allowed access to "/admin/structure/types/manage/webpage/display/full/display-builder"
 
   Scenario: Admin can add a webpage
     When I navigate to "/node/add/webpage"
      And I fill in "Landing Page" for "Title"
-     And I press "Save"
+     And I save the content
     Then I should see "has been created"
      And I should see "Landing Page"
+    When I delete the content item I created
+    Then I should see "has been deleted"

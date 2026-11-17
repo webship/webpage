@@ -14,6 +14,8 @@ Feature: Webpage body field
   Scenario: A webpage can be saved with body content
     When I navigate to "/node/add/webpage"
      And I fill in "Mission Statement" for "Title"
-     And I press "Save"
+     And I save the content
     Then I should see "has been created"
      And I should see "Mission Statement"
+    When I delete the content item I created
+    Then I should see "has been deleted"

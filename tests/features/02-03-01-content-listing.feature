@@ -9,8 +9,10 @@ Feature: Webpage in the content admin listing
   Scenario: A new webpage appears in the admin content listing
     When I navigate to "/node/add/webpage"
      And I fill in "Press Room" for "Title"
-     And I press "Save"
+     And I save the content
     Then I should see "has been created"
     When I navigate to "/admin/content"
     Then I should see "Press Room"
      And I should see "Webpage"
+    When I delete the content item I created
+    Then I should see "has been deleted"
