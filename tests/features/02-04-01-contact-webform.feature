@@ -10,6 +10,7 @@ Feature: Contact webform
      And I should see "Your Name"
      And I should see "Business email"
      And I should see "Your message"
+     And the heading hierarchy should be valid
 
   # Role switch: a visitor sends the form, then the Webmaster removes the
   # submission, so the site keeps no test data. The form has a time limit

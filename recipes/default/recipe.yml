@@ -50,7 +50,8 @@ config:
     webform:
       - webform.webform.contact
   actions:
-    # The contact webform, at /form/contact.
+    # The contact webform, at /form/contact. Its headings start at h2, under
+    # the h1 of the page.
     webform.webform.contact:
       # A webform is a config entity: Drupal 12 refuses simpleConfigUpdate on
       # it, setProperties works on Drupal 11 and 12.
@@ -59,7 +60,7 @@ config:
         elements: |-
           contact_paragraph:
             '#type': webform_markup
-            '#markup': "<h3>We'd love to talk to you</h3><p>Leave us your details and we will contact you soon.</p>"
+            '#markup': "<h2>We'd love to talk to you</h2><p>Leave us your details and we will contact you soon.</p>"
           layout_1:
             '#type': webform_flexbox
             name:
